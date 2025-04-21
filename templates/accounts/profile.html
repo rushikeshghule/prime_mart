@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Prime Mart{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-picture mb-3">
+                    {% else %}
+                    <div class="profile-picture mb-3 bg-light d-flex align-items-center justify-content-center">
+                        <i class="fas fa-user fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <h5 class="mb-1">{{ user.get_full_name }}</h5>
+                    <p class="text-muted mb-3">{{ user.email }}</p>
+                    <a href="{% url 'accounts:edit_profile' %}" class="btn btn-outline-primary btn-sm">
+                        Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <div class="list-group mb-4">
+                <a href="{% url 'accounts:profile' %}" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-user me-2"></i>Profile Overview
+                </a>
+                <a href="{% url 'store:order_list' %}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-box me-2"></i>Orders
+                </a>
+                <a href="{% url 'accounts:address_list' %}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-map-marker-alt me-2"></i>Addresses
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Profile Information -->
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Full Name</label>
+                        </div>
+                        <div class="col-md-9">
+                            <p class="mb-0">{{ user.get_full_name }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Email</label>
+                        </div>
+                        <div class="col-md-9">
+                            <p class="mb-0">{{ user.email }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Phone</label>
+                        </div>
+                        <div class="col-md-9">
+                            <p class="mb-0">{{ profile.phone|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Gender</label>
+                        </div>
+                        <div class="col-md-9">
+                            <p class="mb-0">{{ profile.get_gender_display|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Date of Birth</label>
+                        </div>
+                        <div class="col-md-9">
+                            <p class="mb-0">{{ profile.date_of_birth|date:"F d, Y"|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="card mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Orders</h5>
+                    <a href="{% url 'store:order_list' %}" class="btn btn-link">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if orders %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>#{{ order.id }}</td>
+                                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}info{% endif %}">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>₹{{ order.total_amount }}</td>
+                                    <td>
+                                        <a href="{% url 'store:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
+                                            View Details
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-center text-muted my-4">No orders found</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Default Address -->
+            <div class="card">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Default Address</h5>
+                    <a href="{% url 'accounts:address_list' %}" class="btn btn-link">Manage Addresses</a>
+                </div>
+                <div class="card-body">
+                    {% if default_address %}
+                    <address class="mb-0">
+                        <strong>{{ default_address.get_address_type_display }}</strong><br>
+                        {{ default_address.street_address }}<br>
+                        {{ default_address.city }}, {{ default_address.state }}<br>
+                        PIN: {{ default_address.postal_code }}
+                    </address>
+                    {% else %}
+                    <p class="text-center text-muted my-4">No default address set</p>
+                    <div class="text-center">
+                        <a href="{% url 'accounts:add_address' %}" class="btn btn-primary">
+                            Add New Address
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

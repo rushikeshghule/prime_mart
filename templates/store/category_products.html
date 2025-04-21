@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - Prime Mart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'store:home' %}">Home</a></li>
+            <li class="breadcrumb-item active">{{ category.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="category-header mb-4">
+        <h1 class="h2 section-title">{{ category.name }}</h1>
+        <p class="text-muted">{{ category.description }}</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <!-- Filters Section -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Filters</h5>
+                        <button id="reset-filters" class="btn btn-sm btn-outline-secondary">Reset All</button>
+                    </div>
+                    
+                    <form id="filter-form">
+                        <!-- Price Range Filter -->
+                        <div class="filter-section mb-4">
+                            <h6 class="fw-bold mb-3">Price Range</h6>
+                            <div class="price-slider">
+                                <input type="range" class="form-range" id="price-range" min="500" max="10000" step="500" value="10000">
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <span>₹500</span>
+                                    <span id="price-value">₹10000</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Size Filter -->
+                        <div class="filter-section mb-4">
+                            <h6 class="fw-bold mb-3">Size</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="form-check">
+                                    <input class="form-check-input size-filter" type="checkbox" id="size-xs" value="XS">
+                                    <label class="form-check-label" for="size-xs">XS</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input size-filter" type="checkbox" id="size-s" value="S">
+                                    <label class="form-check-label" for="size-s">S</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input size-filter" type="checkbox" id="size-m" value="M">
+                                    <label class="form-check-label" for="size-m">M</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input size-filter" type="checkbox" id="size-l" value="L">
+                                    <label class="form-check-label" for="size-l">L</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input size-filter" type="checkbox" id="size-xl" value="XL">
+                                    <label class="form-check-label" for="size-xl">XL</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Color Filter -->
+                        <div class="filter-section mb-4">
+                            <h6 class="fw-bold mb-3">Color</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="form-check">
+                                    <input class="form-check-input color-filter" type="checkbox" id="color-black" value="Black">
+                                    <label class="form-check-label" for="color-black">Black</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input color-filter" type="checkbox" id="color-white" value="White">
+                                    <label class="form-check-label" for="color-white">White</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input color-filter" type="checkbox" id="color-blue" value="Blue">
+                                    <label class="form-check-label" for="color-blue">Blue</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input color-filter" type="checkbox" id="color-red" value="Red">
+                                    <label class="form-check-label" for="color-red">Red</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input color-filter" type="checkbox" id="color-green" value="Green">
+                                    <label class="form-check-label" for="color-green">Green</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Brand Filter -->
+                        <div class="filter-section mb-4">
+                            <h6 class="fw-bold mb-3">Brand</h6>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="form-check">
+                                    <input class="form-check-input brand-filter" type="checkbox" id="brand-nike" value="Nike">
+                                    <label class="form-check-label" for="brand-nike">Nike</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input brand-filter" type="checkbox" id="brand-adidas" value="Adidas">
+                                    <label class="form-check-label" for="brand-adidas">Adidas</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input brand-filter" type="checkbox" id="brand-puma" value="Puma">
+                                    <label class="form-check-label" for="brand-puma">Puma</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input brand-filter" type="checkbox" id="brand-levis" value="Levi's">
+                                    <label class="form-check-label" for="brand-levis">Levi's</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input brand-filter" type="checkbox" id="brand-hm" value="H&M">
+                                    <label class="form-check-label" for="brand-hm">H&M</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="apply-filters" class="btn btn-primary w-100">Apply Filters</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <!-- Sort and Results Count -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <p class="mb-0 text-muted"><span id="product-count">{{ products|length }}</span> Results</p>
+                <div class="sorting-options">
+                    <select id="sort-selector" class="form-select">
+                        <option value="featured" selected>Recommended</option>
+                        <option value="price-low-high">Price: Low to High</option>
+                        <option value="price-high-low">Price: High to Low</option>
+                        <option value="newest">What's New</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="row products-container">
+                {% for product in products %}
+                <div class="col-6 col-md-4 mb-4 product-card" 
+                     data-price="{{ product.price }}"
+                     data-size="{{ product.size }}"
+                     data-color="{{ product.color }}"
+                     data-brand="{{ product.brand }}"
+                     data-created="{{ product.created_at|date:'Y-m-d' }}">
+                    <div class="card h-100">
+                        <a href="{% url 'store:product_detail' product.slug %}">
+                            {% if product.category.name == 'Shirts' %}
+                            <img src="https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                            {% elif product.category.name == 'Pants' %}
+                            <img src="https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                            {% elif product.category.name == 'Shoes' %}
+                            <img src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                            {% elif product.category.name == 'Dresses' %}
+                            <img src="https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                            {% elif product.category.name == 'Accessories' %}
+                            <img src="https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                            {% else %}
+                            <img src="https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                            {% endif %}
+                        </a>
+                        
+                        <!-- Wishlist Button -->
+                        <a href="{% url 'store:wishlist_add' product.id %}" class="wishlist-btn{% if user.is_authenticated and product in user.wishlist.products.all %} active{% endif %}">
+                            {% if user.is_authenticated and product in user.wishlist.products.all %}
+                            <i class="fas fa-heart"></i>
+                            {% else %}
+                            <i class="far fa-heart"></i>
+                            {% endif %}
+                        </a>
+                        
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-auto">
+                                <h6 class="brand">{{ product.brand }}</h6>
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="price mb-0">₹{{ product.price }}</p>
+                                <div class="d-flex mt-2 mb-2">
+                                    <span class="badge bg-light text-dark me-2">{{ product.size }}</span>
+                                    <span class="badge bg-light text-dark">{{ product.color }}</span>
+                                </div>
+                            </div>
+                            <div class="d-grid mt-3">
+                                <a href="{% url 'store:cart_add' product.id %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                    <h3>No Products Found</h3>
+                    <p class="text-muted">We couldn't find any products in this category. Please check back later.</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if products %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize filters on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeFilters();
+    });
+</script>
+{% endblock %} 

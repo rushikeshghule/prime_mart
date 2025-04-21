@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping Cart - Prime Mart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="h3 mb-4">Shopping Cart</h1>
+
+    {% if cart.items.all %}
+    <div class="row">
+        <!-- Cart Items -->
+        <div class="col-md-8">
+            {% for item in cart.items.all %}
+            <div class="cart-item">
+                <div class="row align-items-center">
+                    <!-- Product Image -->
+                    <div class="col-3">
+                        <a href="{% url 'store:product_detail' item.product.slug %}">
+                            {% if item.product.category.name == 'Shirts' %}
+                            <img src="https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600" class="img-fluid rounded" alt="{{ item.product.name }}">
+                            {% elif item.product.category.name == 'Pants' %}
+                            <img src="https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600" class="img-fluid rounded" alt="{{ item.product.name }}">
+                            {% elif item.product.category.name == 'Shoes' %}
+                            <img src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600" class="img-fluid rounded" alt="{{ item.product.name }}">
+                            {% elif item.product.category.name == 'Dresses' %}
+                            <img src="https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=600" class="img-fluid rounded" alt="{{ item.product.name }}">
+                            {% elif item.product.category.name == 'Accessories' %}
+                            <img src="https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600" class="img-fluid rounded" alt="{{ item.product.name }}">
+                            {% else %}
+                            <img src="https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=600" class="img-fluid rounded" alt="{{ item.product.name }}">
+                            {% endif %}
+                        </a>
+                    </div>
+                    
+                    <!-- Product Details -->
+                    <div class="col-5">
+                        <h5 class="brand mb-1">{{ item.product.brand }}</h5>
+                        <h6 class="product-name mb-2">{{ item.product.name }}</h6>
+                        <p class="mb-1">Size: {{ item.product.size }}</p>
+                        <p class="mb-1">Color: {{ item.product.color }}</p>
+                        <div class="price mb-2">₹{{ item.product.price }}</div>
+                    </div>
+
+                    <!-- Quantity Selector -->
+                    <div class="col-2">
+                        <div class="quantity-selector">
+                            <form method="post" action="{% url 'store:cart_remove' item.product.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </form>
+                            <span>{{ item.quantity }}</span>
+                            <form method="post" action="{% url 'store:cart_add' item.product.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Subtotal -->
+                    <div class="col-2 text-end">
+                        <div class="subtotal">
+                            ₹{{ item.subtotal }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Order Summary</h5>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Items ({{ cart.items.count }})</span>
+                        <span>₹{{ cart.total }}</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Delivery</span>
+                        <span class="text-success">FREE</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between mb-4">
+                        <strong>Total Amount</strong>
+                        <strong>₹{{ cart.total }}</strong>
+                    </div>
+
+                    <div class="d-grid">
+                        <a href="{% url 'store:checkout' %}" class="btn btn-primary">
+                            PROCEED TO CHECKOUT
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery & Services Info -->
+            <div class="card mt-3 shadow-sm">
+                <div class="card-body">
+                    <h6 class="mb-3">Delivery & Services</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-truck me-2 text-primary"></i>
+                            Free delivery on orders above ₹999
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-undo me-2 text-primary"></i>
+                            30 days easy return and exchange
+                        </li>
+                        <li>
+                            <i class="fas fa-shield-alt me-2 text-primary"></i>
+                            100% authentic products
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-shopping-cart fa-4x mb-4 text-muted"></i>
+        <h2 class="h4 mb-4">Your shopping cart is empty</h2>
+        <p class="text-muted mb-4">Looks like you haven't added anything to your cart yet.</p>
+        <a href="{% url 'store:home' %}" class="btn btn-primary">
+            Continue Shopping
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- You May Also Like Section -->
+    <section class="mt-5">
+        <h3 class="h4 section-title mb-4">You May Also Like</h3>
+        <div class="row">
+            {% for i in "12345"|make_list %}
+            <div class="col-6 col-md-3 mb-4">
+                <div class="card product-card h-100">
+                    <a href="#">
+                        {% if forloop.counter == 1 %}
+                        <img src="https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="Suggested Product">
+                        {% elif forloop.counter == 2 %}
+                        <img src="https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="Suggested Product">
+                        {% elif forloop.counter == 3 %}
+                        <img src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="Suggested Product">
+                        {% elif forloop.counter == 4 %}
+                        <img src="https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="Suggested Product">
+                        {% else %}
+                        <img src="https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="Suggested Product">
+                        {% endif %}
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-auto">
+                            <h6 class="brand">Brand Name</h6>
+                            <h5 class="card-title">Product Name {{ forloop.counter }}</h5>
+                            <p class="price mb-0">₹1499</p>
+                            <div class="d-flex mt-2 mb-2">
+                                <span class="badge bg-light text-dark me-2">M</span>
+                                <span class="badge bg-light text-dark">Black</span>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-3">
+                            <a href="#" class="btn btn-outline-primary">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

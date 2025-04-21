@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Prime Mart{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section mb-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="display-4 fw-bold">Fashion That Speaks</h1>
+            <p class="lead">Discover the latest trends in fashion and explore our new collections.</p>
+            <div class="mt-4">
+                <a href="#featured-products" class="btn btn-primary btn-lg me-2">Shop Now</a>
+                <a href="#" class="btn btn-outline-primary btn-lg">New Arrivals</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <img src="https://images.pexels.com/photos/5325599/pexels-photo-5325599.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="Fashion Banner" class="img-fluid rounded shadow">
+        </div>
+    </div>
+</div>
+
+<!-- Categories Section -->
+<section class="categories-section mb-5">
+    <h2 class="section-title mb-4">Shop By Category</h2>
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-6 col-md-3 mb-4">
+            <a href="{% url 'store:category_products' category.slug %}" class="text-decoration-none">
+                <div class="card category-card h-100">
+                    {% if category.name == 'Shirts' %}
+                    <img src="https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ category.name }}">
+                    {% elif category.name == 'Pants' %}
+                    <img src="https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ category.name }}">
+                    {% elif category.name == 'Shoes' %}
+                    <img src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ category.name }}">
+                    {% else %}
+                    <img src="https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ category.name }}">
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title mb-0">{{ category.name }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>No categories available. Check back later!</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section id="featured-products" class="mb-5">
+    <h2 class="section-title mb-4">Featured Products</h2>
+    <div class="row">
+        {% for product in featured_products %}
+        <div class="col-6 col-md-3 mb-4">
+            <div class="card product-card h-100">
+                <a href="{% url 'store:product_detail' product.slug %}">
+                    {% if product.category.name == 'Shirts' %}
+                    <img src="https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                    {% elif product.category.name == 'Pants' %}
+                    <img src="https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                    {% elif product.category.name == 'Shoes' %}
+                    <img src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                    {% elif product.category.name == 'Dresses' %}
+                    <img src="https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                    {% elif product.category.name == 'Accessories' %}
+                    <img src="https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                    <img src="https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                    {% endif %}
+                </a>
+                
+                <!-- Wishlist Button -->
+                <a href="{% url 'store:wishlist_add' product.id %}" class="wishlist-btn{% if user.is_authenticated and product in user.wishlist.products.all %} active{% endif %}">
+                    {% if user.is_authenticated and product in user.wishlist.products.all %}
+                    <i class="fas fa-heart"></i>
+                    {% else %}
+                    <i class="far fa-heart"></i>
+                    {% endif %}
+                </a>
+                
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-auto">
+                        <h6 class="brand">{{ product.brand }}</h6>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="price mb-0">₹{{ product.price }}</p>
+                        <div class="d-flex mt-2 mb-2">
+                            <span class="badge bg-light text-dark me-2">{{ product.size }}</span>
+                            <span class="badge bg-light text-dark">{{ product.color }}</span>
+                        </div>
+                    </div>
+                    <div class="d-grid mt-3">
+                        <a href="{% url 'store:cart_add' product.id %}" class="btn btn-outline-primary">
+                            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>No products available. Check back later!</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Deal of the Day Section -->
+<section class="deal-section mb-5">
+    <div class="card border-0 shadow">
+        <div class="row g-0">
+            <div class="col-md-6">
+                <img src="https://images.pexels.com/photos/6969268/pexels-photo-6969268.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="img-fluid rounded-start h-100" alt="Deal of the Day" style="object-fit: cover;">
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+                <div class="card-body p-4 p-md-5">
+                    <span class="badge bg-danger mb-3">Deal of the Day</span>
+                    <h3 class="card-title fw-bold mb-3">Summer Collection 2024</h3>
+                    <p class="card-text mb-4">Grab our exclusive summer collection with up to 50% off. Limited time offer!</p>
+                    <div class="countdown mb-4 d-flex">
+                        <div class="countdown-item me-3 text-center">
+                            <div class="countdown-number fw-bold">23</div>
+                            <div class="countdown-label">Hours</div>
+                        </div>
+                        <div class="countdown-item me-3 text-center">
+                            <div class="countdown-number fw-bold">45</div>
+                            <div class="countdown-label">Minutes</div>
+                        </div>
+                        <div class="countdown-item text-center">
+                            <div class="countdown-number fw-bold">19</div>
+                            <div class="countdown-label">Seconds</div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary">Shop Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section mb-5">
+    <div class="row text-center">
+        <div class="col-md-3 mb-4">
+            <div class="feature-card p-4 h-100">
+                <i class="fas fa-truck fa-3x mb-3 text-primary"></i>
+                <h4>Free Shipping</h4>
+                <p class="text-muted mb-0">On orders above ₹999</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="feature-card p-4 h-100">
+                <i class="fas fa-undo fa-3x mb-3 text-primary"></i>
+                <h4>Easy Returns</h4>
+                <p class="text-muted mb-0">30-day return policy</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="feature-card p-4 h-100">
+                <i class="fas fa-shield-alt fa-3x mb-3 text-primary"></i>
+                <h4>Secure Payment</h4>
+                <p class="text-muted mb-0">100% secure checkout</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="feature-card p-4 h-100">
+                <i class="fas fa-headset fa-3x mb-3 text-primary"></i>
+                <h4>24/7 Support</h4>
+                <p class="text-muted mb-0">Dedicated customer service</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section mb-5 bg-white p-4 rounded shadow">
+    <h2 class="section-title mb-4">Customer Reviews</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="testimonial p-4">
+                <div class="stars mb-3">
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                </div>
+                <p class="testimonial-text">"Love the quality and design of clothes. Fast delivery and great customer service!"</p>
+                <div class="d-flex align-items-center mt-3">
+                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Customer" class="rounded-circle me-3" width="50">
+                    <div>
+                        <h6 class="mb-0">Riya Sharma</h6>
+                        <small class="text-muted">Regular Customer</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="testimonial p-4">
+                <div class="stars mb-3">
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star-half-alt text-warning"></i>
+                </div>
+                <p class="testimonial-text">"Great prices and amazing collection. Would definitely recommend to friends!"</p>
+                <div class="d-flex align-items-center mt-3">
+                    <img src="https://randomuser.me/api/portraits/men/44.jpg" alt="Customer" class="rounded-circle me-3" width="50">
+                    <div>
+                        <h6 class="mb-0">Rahul Singh</h6>
+                        <small class="text-muted">New Customer</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="testimonial p-4">
+                <div class="stars mb-3">
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                </div>
+                <p class="testimonial-text">"The best online shopping experience I've had. The return process is so simple!"</p>
+                <div class="d-flex align-items-center mt-3">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Customer" class="rounded-circle me-3" width="50">
+                    <div>
+                        <h6 class="mb-0">Priya Patel</h6>
+                        <small class="text-muted">Loyal Customer</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section p-5 rounded">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h3 class="mb-3">Subscribe to Our Newsletter</h3>
+            <p class="text-muted mb-4">Get the latest updates about new products and upcoming sales.</p>
+            <form class="row g-3 justify-content-center">
+                <div class="col-md-8">
+                    <input type="email" class="form-control form-control-lg" placeholder="Enter your email">
+                </div>
+                <div class="col-md-auto">
+                    <button type="submit" class="btn btn-primary btn-lg">Subscribe</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Countdown timer functionality can be added here
+</script>
+{% endblock %}

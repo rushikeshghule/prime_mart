@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - Prime Mart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'store:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'store:category_products' product.category.slug %}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <!-- Product Details -->
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-md-6 mb-4">
+            <div class="product-images">
+                <div class="main-image mb-3">
+                    {% if product.category.name == 'Shirts' %}
+                    <img src="https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="img-fluid rounded" alt="{{ product.name }}">
+                    {% elif product.category.name == 'Pants' %}
+                    <img src="https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="img-fluid rounded" alt="{{ product.name }}">
+                    {% elif product.category.name == 'Shoes' %}
+                    <img src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="img-fluid rounded" alt="{{ product.name }}">
+                    {% elif product.category.name == 'Dresses' %}
+                    <img src="https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="img-fluid rounded" alt="{{ product.name }}">
+                    {% elif product.category.name == 'Accessories' %}
+                    <img src="https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="img-fluid rounded" alt="{{ product.name }}">
+                    {% else %}
+                    <img src="https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="img-fluid rounded" alt="{{ product.name }}">
+                    {% endif %}
+                </div>
+                <div class="thumbnail-images d-flex">
+                    <div class="thumbnail active me-2">
+                        {% if product.category.name == 'Shirts' %}
+                        <img src="https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=150" class="img-fluid rounded" alt="{{ product.name }}">
+                        {% elif product.category.name == 'Pants' %}
+                        <img src="https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=150" class="img-fluid rounded" alt="{{ product.name }}">
+                        {% elif product.category.name == 'Shoes' %}
+                        <img src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=150" class="img-fluid rounded" alt="{{ product.name }}">
+                        {% elif product.category.name == 'Dresses' %}
+                        <img src="https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=150" class="img-fluid rounded" alt="{{ product.name }}">
+                        {% elif product.category.name == 'Accessories' %}
+                        <img src="https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=150" class="img-fluid rounded" alt="{{ product.name }}">
+                        {% else %}
+                        <img src="https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=150" class="img-fluid rounded" alt="{{ product.name }}">
+                        {% endif %}
+                    </div>
+                    <div class="thumbnail me-2">
+                        <img src="https://images.pexels.com/photos/5384423/pexels-photo-5384423.jpeg?auto=compress&cs=tinysrgb&w=150" class="img-fluid rounded" alt="{{ product.name }} - alt view">
+                    </div>
+                    <div class="thumbnail me-2">
+                        <img src="https://images.pexels.com/photos/5384424/pexels-photo-5384424.jpeg?auto=compress&cs=tinysrgb&w=150" class="img-fluid rounded" alt="{{ product.name }} - alt view">
+                    </div>
+                    <div class="thumbnail">
+                        <img src="https://images.pexels.com/photos/5384425/pexels-photo-5384425.jpeg?auto=compress&cs=tinysrgb&w=150" class="img-fluid rounded" alt="{{ product.name }} - alt view">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="col-md-6">
+            <div class="product-info">
+                <h6 class="brand mb-1">{{ product.brand }}</h6>
+                <h1 class="h3 mb-2">{{ product.name }}</h1>
+                
+                <!-- Ratings -->
+                <div class="ratings mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="me-2">
+                            <span class="badge bg-success">4.5 <i class="fas fa-star"></i></span>
+                        </div>
+                        <span class="text-muted small">382 Ratings</span>
+                    </div>
+                </div>
+                
+                <!-- Price -->
+                <div class="price-container mb-4">
+                    <div class="h3 mb-0">₹{{ product.price }}
+                        <span class="text-muted text-decoration-line-through h6">₹{{ product.price|add:"500" }}</span>
+                        <span class="text-success h6">(50% OFF)</span>
+                    </div>
+                    <div class="text-success small">inclusive of all taxes</div>
+                </div>
+                
+                <!-- Size Selection -->
+                <div class="size-section mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">SELECT SIZE</h6>
+                        <a href="#" class="text-decoration-none small">Size Chart</a>
+                    </div>
+                    <div class="sizes d-flex flex-wrap gap-2">
+                        <div class="size-box {% if product.size == 'XS' %}selected{% endif %}">XS</div>
+                        <div class="size-box {% if product.size == 'S' %}selected{% endif %}">S</div>
+                        <div class="size-box {% if product.size == 'M' %}selected{% endif %}">M</div>
+                        <div class="size-box {% if product.size == 'L' %}selected{% endif %}">L</div>
+                        <div class="size-box {% if product.size == 'XL' %}selected{% endif %}">XL</div>
+                    </div>
+                </div>
+                
+                <!-- Color Selection -->
+                <div class="color-section mb-4">
+                    <h6 class="mb-2">COLOR OPTIONS</h6>
+                    <div class="colors d-flex flex-wrap gap-2">
+                        <div class="color-option {% if product.color == 'Black' %}selected{% endif %}" style="background-color: black;" title="Black"></div>
+                        <div class="color-option {% if product.color == 'White' %}selected{% endif %}" style="background-color: white; border: 1px solid #ddd;" title="White"></div>
+                        <div class="color-option {% if product.color == 'Blue' %}selected{% endif %}" style="background-color: blue;" title="Blue"></div>
+                        <div class="color-option {% if product.color == 'Red' %}selected{% endif %}" style="background-color: red;" title="Red"></div>
+                    </div>
+                </div>
+                
+                <!-- Add to Cart -->
+                <div class="d-grid gap-2 d-md-flex mb-4">
+                    <a href="{% url 'store:cart_add' product.id %}" class="btn btn-primary flex-grow-1">
+                        <i class="fas fa-shopping-cart me-2"></i>ADD TO CART
+                    </a>
+                    <a href="{% url 'store:wishlist_add' product.id %}" class="btn btn-outline-primary flex-grow-1 wishlist-btn-large">
+                        {% if user.is_authenticated and product in user.wishlist.products.all %}
+                        <i class="fas fa-heart me-2"></i>WISHLISTED
+                        {% else %}
+                        <i class="far fa-heart me-2"></i>WISHLIST
+                        {% endif %}
+                    </a>
+                </div>
+                
+                <!-- Delivery Info -->
+                <div class="delivery-section mb-4">
+                    <h6 class="mb-2">DELIVERY OPTIONS</h6>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Enter PIN code" aria-label="PIN code" maxlength="6" pattern="\d{6}">
+                        <button class="btn btn-outline-secondary" type="button">Check</button>
+                    </div>
+                    <ul class="list-unstyled delivery-info">
+                        <li class="mb-2"><i class="fas fa-truck me-2 text-muted"></i>Free delivery on orders above ₹999</li>
+                        <li class="mb-2"><i class="fas fa-undo me-2 text-muted"></i>30 days return policy</li>
+                        <li><i class="fas fa-money-bill-wave me-2 text-muted"></i>Cash on delivery available</li>
+                    </ul>
+                </div>
+                
+                <!-- Product Details -->
+                <div class="product-details mb-4">
+                    <h6 class="mb-2">PRODUCT DETAILS</h6>
+                    <div class="product-description text-muted">
+                        <p>{{ product.description|default:"High-quality material with modern styling. Perfect for daily wear and special occasions alike. Features a comfortable fit with premium craftsmanship and attention to detail." }}</p>
+                        <ul>
+                            <li>Material: Premium cotton blend</li>
+                            <li>Color: {{ product.color }}</li>
+                            <li>Fit: Regular</li>
+                            <li>Care: Machine wash</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <section class="related-products mt-5">
+        <h3 class="section-title mb-4">You May Also Like</h3>
+        <div class="row">
+            {% for product in related_products %}
+            <div class="col-6 col-md-3 mb-4">
+                <div class="card product-card h-100">
+                    <a href="{% url 'store:product_detail' product.slug %}">
+                        {% if product.category.name == 'Shirts' %}
+                        <img src="https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                        {% elif product.category.name == 'Pants' %}
+                        <img src="https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                        {% elif product.category.name == 'Shoes' %}
+                        <img src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                        {% elif product.category.name == 'Dresses' %}
+                        <img src="https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                        {% elif product.category.name == 'Accessories' %}
+                        <img src="https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                        <img src="https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=600" class="card-img-top" alt="{{ product.name }}">
+                        {% endif %}
+                    </a>
+                    
+                    <!-- Wishlist Button -->
+                    <a href="{% url 'store:wishlist_add' product.id %}" class="wishlist-btn{% if user.is_authenticated and product in user.wishlist.products.all %} active{% endif %}">
+                        {% if user.is_authenticated and product in user.wishlist.products.all %}
+                        <i class="fas fa-heart"></i>
+                        {% else %}
+                        <i class="far fa-heart"></i>
+                        {% endif %}
+                    </a>
+                    
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-auto">
+                            <h6 class="brand">{{ product.brand }}</h6>
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="price mb-0">₹{{ product.price }}</p>
+                            <div class="d-flex mt-2 mb-2">
+                                <span class="badge bg-light text-dark me-2">{{ product.size }}</span>
+                                <span class="badge bg-light text-dark">{{ product.color }}</span>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-3">
+                            <a href="{% url 'store:cart_add' product.id %}" class="btn btn-outline-primary">
+                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No related products available. Check out our other products!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+    .thumbnail {
+        cursor: pointer;
+        opacity: 0.7;
+        transition: all 0.3s;
+    }
+    
+    .thumbnail.active, .thumbnail:hover {
+        opacity: 1;
+        border: 2px solid var(--primary-color);
+    }
+    
+    .size-box, .color-option {
+        cursor: pointer;
+    }
+    
+    .product-description ul {
+        padding-left: 1rem;
+    }
+    
+    .wishlist-btn-large.active {
+        background-color: rgba(255, 63, 108, 0.1);
+        color: var(--primary-color);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Thumbnail switching functionality
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const mainImage = document.querySelector('.main-image img');
+        
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                // Update main image
+                mainImage.src = this.querySelector('img').src.replace('w=150', 'w=1260&h=750&dpr=1');
+                
+                // Update active state
+                thumbnails.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Size selection
+        const sizeBoxes = document.querySelectorAll('.size-box');
+        sizeBoxes.forEach(box => {
+            box.addEventListener('click', function() {
+                sizeBoxes.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+        
+        // Color selection
+        const colorOptions = document.querySelectorAll('.color-option');
+        colorOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                colorOptions.forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+    });
+</script>
+{% endblock %}
