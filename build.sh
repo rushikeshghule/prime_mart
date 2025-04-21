@@ -63,9 +63,17 @@ try:
     # Check if tables exist
     with connection.cursor() as cursor:
         if 'postgresql' in connection.settings_dict['ENGINE']:
-            cursor.execute("SELECT 1 FROM pg_catalog.pg_tables WHERE schemaname = 'public'")
+            # List all tables in the database
+            cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
             tables = cursor.fetchall()
-            print(f"Found {len(tables)} tables in database")
+            print(f"Found {len(tables)} tables in database:")
+            for table in tables:
+                print(f"  - {table[0]}")
+            
+            # Check for our specific tables
+            cursor.execute("SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'store_category')")
+            exists = cursor.fetchone()[0]
+            print(f"store_category table exists: {exists}")
         else:
             print("Not using PostgreSQL, skipping table check")
 except Exception as e:
@@ -77,6 +85,34 @@ END
 
 echo "Checking for unapplied migrations..."
 python manage.py showmigrations --settings=ecommerce.production_settings
+
+echo "FORCE RESET ALL MIGRATIONS (development environment only)..."
+python - <<END
+import os
+import sys
+import django
+from django.db import connection
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce.production_settings')
+django.setup()
+
+try:
+    with connection.cursor() as cursor:
+        # Drop all tables in the public schema
+        cursor.execute("""
+        DO \$\$
+        DECLARE
+            r RECORD;
+        BEGIN
+            FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP
+                EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+            END LOOP;
+        END \$\$;
+        """)
+        print("✅ All tables dropped successfully")
+except Exception as e:
+    print("❌ Error dropping tables:", str(e))
+END
 
 echo "Applying migrations with specific settings module..."
 python manage.py migrate --settings=ecommerce.production_settings --noinput
