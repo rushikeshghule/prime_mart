@@ -6,7 +6,7 @@ from .settings import *
 DEBUG = False
 
 # Update allowed hosts
-ALLOWED_HOSTS = ['prime-mart.onrender.com', '.render.com']
+ALLOWED_HOSTS = ['prime-mart.onrender.com', '.render.com','prime-mart-i4hh.onrender.com']
 
 # Configure production database
 DATABASE_URL = os.getenv('DATABASE_URL')
