@@ -8,20 +8,9 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        fromDatabase:
-          name: prime-mart-db
-          property: connectionString
+        value: postgresql://primemartdb_user:kd6pDV7muquhynI1bLMnaelQqZT9KMSL@dpg-d02v9m3uibrs73b96qrg-a/primemartdb
       - key: DJANGO_SETTINGS_MODULE
         value: ecommerce.production_settings
       - key: DEBUG
         value: "False"
     plan: free
-    dependencies:
-      - type: postgresql
-        name: prime-mart-db
-        ipAllowList: []
-
-databases:
-  - name: prime-mart-db
-    plan: free
-    ipAllowList: [] 

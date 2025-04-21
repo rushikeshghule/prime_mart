@@ -60,7 +60,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 # Database - Force PostgreSQL for Render deployment
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://primemartdb_user:kd6pDV7muquhynI1bLMnaelQqZT9KMSL@dpg-d02v9m3uibrs73b96qrg-a/primemartdb')
 
 # Print database environment info for debugging
 print(f"DATABASE_URL is {'defined' if DATABASE_URL else 'NOT defined'}")
