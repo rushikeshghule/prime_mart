@@ -16,7 +16,12 @@ services:
       - key: DEBUG
         value: "False"
     plan: free
+    dependencies:
+      - type: postgresql
+        name: prime-mart-db
+        ipAllowList: []
 
 databases:
   - name: prime-mart-db
-    plan: free 
+    plan: free
+    ipAllowList: [] 

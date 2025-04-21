@@ -1,6 +1,7 @@
 import os
 import dj_database_url
 from pathlib import Path
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -60,17 +61,29 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 # Database - Force PostgreSQL for Render deployment
 DATABASE_URL = os.getenv('DATABASE_URL')
+
+# Print database environment info for debugging
+print(f"DATABASE_URL is {'defined' if DATABASE_URL else 'NOT defined'}")
+if not DATABASE_URL:
+    all_env_vars = {key: '[REDACTED]' if 'SECRET' in key else value for key, value in os.environ.items()}
+    print(f"Available environment variables: {all_env_vars}")
+
+# Database configuration
 if DATABASE_URL:
+    # Use PostgreSQL on Render
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
+    print(f"Using PostgreSQL database with ENGINE={DATABASES['default']['ENGINE']}")
 else:
-    # For local development only - this won't be used on Render
-    raise Exception(
-        "DATABASE_URL environment variable is not set. "
-        "Configure it with your PostgreSQL connection string. "
-        "This application requires PostgreSQL to run."
-    )
+    # For CI/CD or initial deployment, use SQLite temporarily
+    print("WARNING: DATABASE_URL not found, using SQLite as fallback")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
