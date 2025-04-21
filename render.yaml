@@ -3,7 +3,7 @@ services:
     name: prime-mart
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn ecommerce.wsgi:application --bind 0.0.0.0:$PORT"
+    startCommand: "gunicorn ecommerce.wsgi_production:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: SECRET_KEY
         generateValue: true
@@ -13,6 +13,8 @@ services:
           property: connectionString
       - key: DJANGO_SETTINGS_MODULE
         value: ecommerce.production_settings
+      - key: DEBUG
+        value: "False"
     plan: free
 
 databases:

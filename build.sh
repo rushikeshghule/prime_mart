@@ -2,35 +2,65 @@
 # exit on error
 set -o errexit
 
+# Print environment information for debugging
+echo "Starting build process..."
+echo "System environment:"
+echo "Python version: $(python --version)"
+echo "Current directory: $(pwd)"
+
 # Ensure we're using the correct settings
 export DJANGO_SETTINGS_MODULE=ecommerce.production_settings
+echo "Using settings module: $DJANGO_SETTINGS_MODULE"
 
 echo "Installing dependencies..."
 pip install -r requirements.txt
 
 echo "Collecting static files..."
-python manage.py collectstatic --no-input
+python manage.py collectstatic --no-input --settings=ecommerce.production_settings
 
 echo "Checking for unapplied migrations..."
-python manage.py showmigrations
+python manage.py showmigrations --settings=ecommerce.production_settings
+
+echo "Checking database connection..."
+python -c "
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce.production_settings')
+import django
+django.setup()
+from django.db import connections
+db = connections['default']
+print(f'Database engine: {db.settings_dict[\"ENGINE\"]}')
+print(f'Database name: {db.settings_dict[\"NAME\"]}')
+cursor = db.cursor()
+cursor.execute('SELECT 1')
+print('Database connection successful')
+"
 
 echo "Applying migrations with specific settings module..."
 python manage.py migrate --settings=ecommerce.production_settings --noinput
 
 echo "Creating superuser if it doesn't exist..."
 python manage.py shell -c "
-from django.contrib.auth import get_user_model;
-User = get_user_model();
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce.production_settings')
+import django
+django.setup()
+from django.contrib.auth import get_user_model
+User = get_user_model()
 if not User.objects.filter(username='admin').exists():
     User.objects.create_superuser('admin', 'admin@example.com', 'Password@123')
-    print('Superuser created successfully');
+    print('Superuser created successfully')
 else:
     print('Superuser already exists')
 "
 
 echo "Creating initial data for store..."
 python manage.py shell -c "
-from store.models import Category, Product;
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce.production_settings')
+import django
+django.setup()
+from store.models import Category, Product
 if Category.objects.count() == 0:
     # Create categories
     cat1 = Category.objects.create(name='Clothing')
@@ -68,4 +98,6 @@ if Category.objects.count() == 0:
     print('Created initial categories and products')
 else:
     print('Categories already exist, skipping data creation')
-" 
+"
+
+echo "Build process completed." 
